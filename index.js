@@ -9,6 +9,7 @@ let movieHtml = ``
 let test = ''
 let movieInformationArray = []
 let watchList = []
+localStorage.setItem("watchlist", '')
 
 searchBtn.addEventListener('click', searchAllMovies)
 inputMovie.addEventListener('change', searchAllMovies)
