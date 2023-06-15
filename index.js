@@ -5,11 +5,10 @@ const scrollContainer = document.getElementById('scroll-container')
 const watchlistBtn = document.getElementById('watchlist-btn')
 const seeWatchListBtn = document.getElementById('see-movie-list-btn')
 const body = document.getElementById('body')
-let movieHtml = ``
+let movieHtml = ''
 let test = ''
 let movieInformationArray = []
-let watchList = []
-localStorage.setItem("watchlist", '')
+let watchListArray = []
 
 searchBtn.addEventListener('click', searchAllMovies)
 inputMovie.addEventListener('change', searchAllMovies)
@@ -100,12 +99,17 @@ function renderMovies() {
         let moviePoster = ''
         const watchlist = JSON.parse(localStorage.getItem("watchlist"))
 
-
+        
         // Logic to check whether btn should add or remove movies
-        if (watchlist != null && watchlist.includes(movie.imdbID)) {
+        if (watchlist === null){
+            btn = `<button class='watchlist-btn' data-action='add' data-movieid='${movie.imdbID}' data-movietitle='${movie.Title}' >Add</button>`
+        }
+
+        else if (watchlist.length > 0 && watchlist.includes(movie.imdbID)){
+            if(watchlist.includes(movie.imdbID)) {
 
             btn = btn = `<button class='watchlist-btn-remove' data-action='remove' data-movieid='${movie.imdbID}' data-movietitle='${movie.Title}' >Remove</button>`
-        }
+        }}
         else {
             btn = `<button class='watchlist-btn' data-action='add' data-movieid='${movie.imdbID}' data-movietitle='${movie.Title}' >Add</button>`
         }
@@ -133,7 +137,6 @@ function renderMovies() {
         }
 
         return `
-
          <div class='background-img' style="background-image: url(${movie.Poster}&filter=blurgaussian&smooth=1);">
             <div class='movie'>    
                 <div class='movie-img'>
@@ -150,7 +153,6 @@ function renderMovies() {
                 
             </div>
         </div>
-      
         `
 
     }).join('')
@@ -166,19 +168,30 @@ function setLocalStorage(e) {
 
     if (e.target.dataset.action === 'add') {
 
-
+       
         const watchList = JSON.parse(localStorage.getItem("watchlist"))
 
-        if (!watchList.includes(e.target.dataset.movieid)) {
+        
+        if (watchList === null){
             
-            watchList.unshift(e.target.dataset.movieid)
+            watchListArray.unshift(e.target.dataset.movieid)
+            console.log("test")
+            localStorage.setItem("watchlist", JSON.stringify(watchListArray))
+
+            renderMovies()
+        }
+        else if (!watchList.includes(e.target.dataset.movieid)) {
             
-            localStorage.setItem("watchlist", JSON.stringify(watchList))
+            watchListArray.unshift(e.target.dataset.movieid)
+            console.log("test")
+            localStorage.setItem("watchlist", JSON.stringify(watchListArray))
             
             renderMovies()
         }
+    }
+    
     // otherwise remove from local storage
-    } else if (e.target.dataset.action === 'remove') {
+    else if (e.target.dataset.action === 'remove') {
 
         const watchList = JSON.parse(localStorage.getItem("watchlist"))
 
